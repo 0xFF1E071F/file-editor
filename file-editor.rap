@@ -1,0 +1,53 @@
+[Project]
+Assembler=Masm
+Type=Win32 App
+Description=file-editor
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+[Files]
+1=file-editor.Asm
+2=file-editor.Inc
+3=file-editor.Rc
+4=file-editor.dlg
+[MakeFiles]
+0=file-editor.rap
+1=file-editor.rc
+2=file-editor.asm
+3=file-editor.obj
+4=file-editor.res
+5=file-editor.exe
+6=file-editor.def
+7=file-editor.dll
+8=file-editor.txt
+9=file-editor.lib
+10=file-editor.mak
+11=file-editor.hla
+12=file-editor.com
+[MakeDef]
+Menu=1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0
+1=4,O,$B\RC.EXE /v,1
+2=3,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",2
+3=5,O,$B\LINK.EXE /SUBSYSTEM:WINDOWS /RELEASE /VERSION:4.0 /LIBPATH:"$L" /OUT:"$5",3,4
+4=0,0,,5
+5=rsrc.obj,O,$B\CVTRES.EXE,rsrc.res
+7=0,0,"$E\OllyDbg",5
+6=*.obj,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",*.asm
+11=4,O,$B\RC.EXE /v,1
+12=3,O,$B\ML.EXE /c /coff /Cp /Zi /nologo /I"$I",2
+13=5,O,$B\LINK.EXE /SUBSYSTEM:WINDOWS /DEBUG /VERSION:4.0 /LIBPATH:"$L" /OUT:"$5",3,4
+14=0,0,,5
+15=rsrc.obj,O,$B\CVTRES.EXE,rsrc.res
+16=*.obj,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",*.asm
+17=0,0,"$E\OllyDbg",5
+[Resource]
+[StringTable]
+[VerInf]
+[Group]
+Group=Added files,Assembly,Resources,Misc,Modules
+1=2
+2=2
+3=3
+4=3
+[AutoLoad]
+AutoLoad=
