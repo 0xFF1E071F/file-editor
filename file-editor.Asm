@@ -58,26 +58,40 @@ DlgProc proc hWin:HWND,uMsg:UINT,wParam:WPARAM,lParam:LPARAM
 		mov ofn.nMaxFile, 260
 		mov ofn.lpstrInitialDir, offset initdir
 		
-		invoke GetOpenFileName, offset ofn
-		.if eax!=0
-			invoke Mem_Alloc, 4000h 
-			mov pmem, eax
-			
-			invoke CreateFile, addr filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
-			.if eax==-1
-				invoke Mem_Free, pmem
-			.else
-				mov hFile, eax	
-				invoke ReadFile, hFile, pmem, 4000h, readed, 0
-				invoke SendMessage, hText, WM_SETTEXT,0,pmem
-			.endif
-		.endif
-		
-		
+		invoke Mem_Alloc, 4000h 
+		mov pmem, eax
 		
 	.elseif eax==WM_COMMAND
-
+		.if wParam == IDC_BTN1
+			invoke GetOpenFileName, offset ofn
+			.if eax!=0
+			
+				invoke CreateFile, addr filename, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0
+				.if eax!=-1
+					mov hFile, eax	
+					invoke ReadFile, hFile, pmem, 4000h, readed, 0
+					invoke CloseHandle,hFile
+					invoke SendMessage, hText, WM_SETTEXT,0,pmem
+				.endif
+			
+			.endif
+		.elseif wParam == IDC_BTN2
+			invoke GetSaveFileName, offset ofn
+			.if eax!=0
+				invoke SendMessage, hText, WM_GETTEXT,4000h,pmem
+				invoke MessageBox, 0, filename, 0, MB_OK
+				invoke CreateFile, filename, GENERIC_READ or GENERIC_WRITE, FILE_SHARE_READ, 0,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0
+				.if eax!=-1
+					mov hFile, eax	
+					invoke WriteFile, hFile, pmem, 4000h, addr readed, 0
+					invoke CloseHandle,hFile
+				.endif
+				invoke MessageBox, 0, pmem, 0, MB_OK
+			.endif
+			
+		.endif
 	.elseif eax==WM_CLOSE
+		invoke Mem_Free, pmem
 		invoke EndDialog,hWin,0
 	.else
 		mov		eax,FALSE
