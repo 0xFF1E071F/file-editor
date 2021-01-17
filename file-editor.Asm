@@ -79,14 +79,15 @@ DlgProc proc hWin:HWND,uMsg:UINT,wParam:WPARAM,lParam:LPARAM
 			invoke GetSaveFileName, offset ofn
 			.if eax!=0
 				invoke SendMessage, hText, WM_GETTEXT,4000h,pmem
-				invoke MessageBox, 0, filename, 0, MB_OK
-				invoke CreateFile, filename, GENERIC_READ or GENERIC_WRITE, FILE_SHARE_READ, 0,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0
+				invoke MessageBox, 0, offset filename, 0, MB_OK
+				invoke CreateFile, filename, GENERIC_READ or GENERIC_WRITE, FILE_SHARE_WRITE, 0,CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0
 				.if eax!=-1
+					invoke MessageBox, 0, pmem, 0, MB_OK
 					mov hFile, eax	
 					invoke WriteFile, hFile, pmem, 4000h, addr readed, 0
 					invoke CloseHandle,hFile
 				.endif
-				invoke MessageBox, 0, pmem, 0, MB_OK
+				
 			.endif
 			
 		.endif
